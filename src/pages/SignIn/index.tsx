@@ -20,13 +20,15 @@ const SignIn: React.FC = () => {
           <Input
             name="email"
             icon={FiMail}
-            type="text"
+            type="email"
+            autoComplete="username"
             placeholder="seu e-mail"
           />
           <Input
             name="password"
             icon={FiLock}
             type="password"
+            autoComplete="current-password"
             placeholder="sua senha"
           />
 
