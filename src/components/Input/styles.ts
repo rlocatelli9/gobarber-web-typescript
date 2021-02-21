@@ -1,8 +1,11 @@
 import styled, { css } from 'styled-components';
 
+import Tooltip from '../Tooltip';
+
 interface ContainerProps {
   isFocused: boolean;
   isFilled: boolean;
+  isErrored: boolean;
 }
 
 export const Container = styled.div<ContainerProps>`
@@ -19,6 +22,12 @@ export const Container = styled.div<ContainerProps>`
   svg {
     margin-right: 16px;
   }
+
+  ${props =>
+    props.isErrored &&
+    css`
+      border-color: #c53030;
+    `}
 
   ${props =>
     props.isFocused &&
@@ -44,7 +53,40 @@ export const Container = styled.div<ContainerProps>`
     }
   }
 
+  /* Change Autocomplete styles in Chrome*/
+  input:-webkit-autofill,
+  /* input:-webkit-autofill:hover, */
+  /* input:-webkit-autofill:focus, */
+  textarea:-webkit-autofill,
+  /* textarea:-webkit-autofill:hover, */
+  /* textarea:-webkit-autofill:focus, */
+  select:-webkit-autofill
+  /* select:-webkit-autofill:hover, */
+  /* select:-webkit-autofill:focus  */ {
+    border: 0;
+    -webkit-text-fill-color: #f4ede8;
+    -webkit-box-shadow: 0 0 0px 1000px none inset;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+
   & + div {
     margin-top: 8px;
+  }
+`;
+
+export const Error = styled(Tooltip)`
+  height: 20px;
+  svg {
+    margin: 0;
+    margin-left: 16px;
+  }
+
+  span {
+    background: #c53030;
+    color: #fff;
+
+    &::before {
+      border-color: #c53030 transparent;
+    }
   }
 `;
