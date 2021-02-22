@@ -1,6 +1,6 @@
 import React, { useCallback, useRef } from 'react';
 import * as Yup from 'yup';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
@@ -25,10 +25,9 @@ interface SignInFormData {
 const SignIn: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
 
-  const { user, signIn } = useAuth();
+  const { signIn } = useAuth();
   const { addToast } = useToast();
-
-  // console.log(user);
+  const history = useHistory();
 
   const handleSubmit = useCallback(
     async (data: SignInFormData) => {
@@ -50,6 +49,8 @@ const SignIn: React.FC = () => {
           password: data.password,
         });
 
+        history.push('/dashboard');
+
         addToast({
           type: 'success',
           title: 'Sucesso!',
@@ -70,7 +71,7 @@ const SignIn: React.FC = () => {
         });
       }
     },
-    [addToast, signIn],
+    [addToast, history, signIn],
   );
 
   return (
