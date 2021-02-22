@@ -1,5 +1,6 @@
 import React, { useCallback, useRef } from 'react';
 import * as Yup from 'yup';
+import { Link } from 'react-router-dom';
 
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
@@ -58,6 +59,8 @@ const SignIn: React.FC = () => {
         if (error instanceof Yup.ValidationError) {
           const errors = getValidationErrors(error);
           formRef.current?.setErrors(errors);
+
+          return;
         }
 
         addToast({
@@ -100,10 +103,10 @@ const SignIn: React.FC = () => {
             Esqueci minha senha
           </a>
         </Form>
-        <a href="/register">
+        <Link to="/signup">
           <FiLogIn size={20} />
           Criar conta
-        </a>
+        </Link>
       </Content>
 
       <BackgroundImg />
