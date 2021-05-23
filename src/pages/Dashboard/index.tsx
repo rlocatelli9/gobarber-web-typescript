@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { FiClock, FiPower } from 'react-icons/fi';
 import {
@@ -10,12 +10,16 @@ import {
   CustomSchedule,
   CustomCalendar,
   CustomNextAppointment,
+  CustomSection,
+  CustomAppointment,
 } from './styles';
 
 import logo from '../../assets/logo.svg';
 import { useAuth } from '../../context/AuthContext';
 
 const Dashboard: React.FC = () => {
+  const [selectedDate, setSelectedDate] = useState(new Date());
+
   const { signOut, user } = useAuth();
 
   return (
@@ -62,6 +66,70 @@ const Dashboard: React.FC = () => {
               </span>
             </div>
           </CustomNextAppointment>
+
+          <CustomSection>
+            <strong>Manhã</strong>
+
+            <CustomAppointment>
+              <span>
+                <FiClock />
+                08:00
+              </span>
+              <div>
+                <img
+                  src="https://avatars.githubusercontent.com/u/36084116?v=4"
+                  alt="Robson Locatelli"
+                />
+
+                <strong>Robson Locatelli</strong>
+                <span>
+                  <FiClock />
+                  08:00
+                </span>
+              </div>
+            </CustomAppointment>
+            <CustomAppointment>
+              <span>
+                <FiClock />
+                08:00
+              </span>
+              <div>
+                <img
+                  src="https://avatars.githubusercontent.com/u/36084116?v=4"
+                  alt="Robson Locatelli"
+                />
+
+                <strong>Robson Locatelli</strong>
+                <span>
+                  <FiClock />
+                  08:00
+                </span>
+              </div>
+            </CustomAppointment>
+          </CustomSection>
+
+          <CustomSection>
+            <strong>Tarde</strong>
+
+            <CustomAppointment>
+              <span>
+                <FiClock />
+                08:00
+              </span>
+              <div>
+                <img
+                  src="https://avatars.githubusercontent.com/u/36084116?v=4"
+                  alt="Robson Locatelli"
+                />
+
+                <strong>Robson Locatelli</strong>
+                <span>
+                  <FiClock />
+                  08:00
+                </span>
+              </div>
+            </CustomAppointment>
+          </CustomSection>
         </CustomSchedule>
         <CustomCalendar />
       </CustomContent>
