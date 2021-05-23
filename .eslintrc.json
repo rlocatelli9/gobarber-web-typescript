@@ -41,6 +41,7 @@
         "error"
       ],
       "react/react-in-jsx-scope": "off",
+      "import/no-duplicates": "off",
       "import/extensions": [
         "error",
         "ignorePackages",
