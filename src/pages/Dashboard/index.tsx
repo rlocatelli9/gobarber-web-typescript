@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { isToday, format } from 'date-fns';
+import { isToday, format, parseISO } from 'date-fns';
 import ptBR from 'date-fns/locale/pt-BR';
 import DayPicker, { DayModifiers } from 'react-day-picker';
 import 'react-day-picker/lib/style.css';
@@ -19,6 +19,7 @@ import {
 } from './styles';
 
 import logo from '../../assets/logo.svg';
+import avatarDefault from '../../assets/avatar-nude.png';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../services/apiClient';
 
@@ -29,6 +30,7 @@ interface MonthAvailabilityItem {
 
 interface AppointmentsItem {
   id: string;
+  hourFormated: string;
   date: string;
   user: {
     name: string;
@@ -71,7 +73,7 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     api
-      .get(`/appointments/me`, {
+      .get<AppointmentsItem[]>(`/appointments/me`, {
         params: {
           day: selectedDate.getDate(),
           month: selectedDate.getMonth() + 1,
@@ -79,8 +81,13 @@ const Dashboard: React.FC = () => {
         },
       })
       .then(response => {
-        setAppointments(response.data);
-        console.log(response.data);
+        const appointmentsFormated = response.data.map(appointment => {
+          return {
+            ...appointment,
+            hourFormated: format(parseISO(appointment.date), 'HH:mm'),
+          };
+        });
+        setAppointments(appointmentsFormated);
       });
   }, [selectedDate]);
 
@@ -107,6 +114,18 @@ const Dashboard: React.FC = () => {
       locale: ptBR,
     });
   }, [selectedDate]);
+
+  const mormingAppointments = useMemo(() => {
+    return appointments.filter(appointment => {
+      return parseISO(appointment.date).getHours() < 12;
+    });
+  }, [appointments]);
+
+  const afternoonAppointments = useMemo(() => {
+    return appointments.filter(appointment => {
+      return parseISO(appointment.date).getHours() >= 12;
+    });
+  }, [appointments]);
 
   return (
     <Container>
@@ -156,65 +175,55 @@ const Dashboard: React.FC = () => {
           <CustomSection>
             <strong>Manhã</strong>
 
-            <CustomAppointment>
-              <span>
-                <FiClock />
-                08:00
-              </span>
-              <div>
-                <img
-                  src="https://avatars.githubusercontent.com/u/36084116?v=4"
-                  alt="Robson Locatelli"
-                />
-
-                <strong>Robson Locatelli</strong>
+            {mormingAppointments.map(appointment => (
+              <CustomAppointment key={appointment.id}>
                 <span>
                   <FiClock />
-                  08:00
+                  {appointment.hourFormated}
                 </span>
-              </div>
-            </CustomAppointment>
-            <CustomAppointment>
-              <span>
-                <FiClock />
-                08:00
-              </span>
-              <div>
-                <img
-                  src="https://avatars.githubusercontent.com/u/36084116?v=4"
-                  alt="Robson Locatelli"
-                />
+                <div>
+                  {appointment.user.avatarUrl && (
+                    <img
+                      src={appointment.user.avatarUrl}
+                      alt={appointment.user.name}
+                    />
+                  )}
 
-                <strong>Robson Locatelli</strong>
-                <span>
-                  <FiClock />
-                  08:00
-                </span>
-              </div>
-            </CustomAppointment>
+                  {!appointment.user.avatarUrl && (
+                    <img src={avatarDefault} alt={appointment.user.name} />
+                  )}
+
+                  <strong>{appointment.user.name}</strong>
+                </div>
+              </CustomAppointment>
+            ))}
           </CustomSection>
 
           <CustomSection>
             <strong>Tarde</strong>
 
-            <CustomAppointment>
-              <span>
-                <FiClock />
-                08:00
-              </span>
-              <div>
-                <img
-                  src="https://avatars.githubusercontent.com/u/36084116?v=4"
-                  alt="Robson Locatelli"
-                />
-
-                <strong>Robson Locatelli</strong>
+            {afternoonAppointments.map(appointment => (
+              <CustomAppointment key={appointment.id}>
                 <span>
                   <FiClock />
-                  08:00
+                  {appointment.hourFormated}
                 </span>
-              </div>
-            </CustomAppointment>
+                <div>
+                  {appointment.user.avatarUrl && (
+                    <img
+                      src={appointment.user.avatarUrl}
+                      alt={appointment.user.name}
+                    />
+                  )}
+
+                  {!appointment.user.avatarUrl && (
+                    <img src={avatarDefault} alt={appointment.user.name} />
+                  )}
+
+                  <strong>{appointment.user.name}</strong>
+                </div>
+              </CustomAppointment>
+            ))}
           </CustomSection>
         </CustomSchedule>
         <CustomCalendar>
