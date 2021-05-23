@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { isToday, format, parseISO } from 'date-fns';
+import { isToday, format, parseISO, isAfter } from 'date-fns';
 import ptBR from 'date-fns/locale/pt-BR';
 import DayPicker, { DayModifiers } from 'react-day-picker';
 import 'react-day-picker/lib/style.css';
@@ -49,7 +49,7 @@ const Dashboard: React.FC = () => {
   const { signOut, user } = useAuth();
 
   const handleDateChange = useCallback((day: Date, modifiers: DayModifiers) => {
-    if (modifiers.available) {
+    if (modifiers.available && !modifiers.disabled) {
       setSelectedDate(day);
     }
   }, []);
@@ -127,6 +127,12 @@ const Dashboard: React.FC = () => {
     });
   }, [appointments]);
 
+  const nextAppointment = useMemo(() => {
+    return appointments.find(appointment =>
+      isAfter(parseISO(appointment.date), new Date()),
+    );
+  }, [appointments]);
+
   return (
     <Container>
       <CustomHeader>
@@ -156,24 +162,34 @@ const Dashboard: React.FC = () => {
             <span>{selectedWeekDay}</span>
           </p>
 
-          <CustomNextAppointment>
-            <strong>Atendimento a seguir</strong>
-            <div>
-              <img
-                src="https://avatars.githubusercontent.com/u/36084116?v=4"
-                alt="Robson Locatelli"
-              />
+          {isToday(selectedDate) && nextAppointment && (
+            <CustomNextAppointment>
+              <strong>Agendamento a seguir</strong>
+              <div>
+                <img
+                  src={nextAppointment.user.avatarUrl}
+                  alt={nextAppointment.user.name}
+                />
 
-              <strong>Robson Locatelli</strong>
-              <span>
-                <FiClock />
-                08:00
-              </span>
-            </div>
-          </CustomNextAppointment>
+                {!nextAppointment.user.avatarUrl && (
+                  <img src={avatarDefault} alt={nextAppointment.user.name} />
+                )}
+
+                <strong>{nextAppointment.user.name}</strong>
+                <span>
+                  <FiClock />
+                  08:00
+                </span>
+              </div>
+            </CustomNextAppointment>
+          )}
 
           <CustomSection>
             <strong>Manhã</strong>
+
+            {mormingAppointments.length === 0 && (
+              <p>Nenhum agendamento para esse período</p>
+            )}
 
             {mormingAppointments.map(appointment => (
               <CustomAppointment key={appointment.id}>
@@ -201,6 +217,10 @@ const Dashboard: React.FC = () => {
 
           <CustomSection>
             <strong>Tarde</strong>
+
+            {afternoonAppointments.length === 0 && (
+              <p>Nenhum agendamento para esse período</p>
+            )}
 
             {afternoonAppointments.map(appointment => (
               <CustomAppointment key={appointment.id}>
