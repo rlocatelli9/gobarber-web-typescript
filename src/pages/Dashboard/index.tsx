@@ -1,11 +1,15 @@
 import React from 'react';
 
-import { FiPower } from 'react-icons/fi';
+import { FiClock, FiPower } from 'react-icons/fi';
 import {
   Container,
   CustomHeader,
   CustomHeaderContent,
   CustomProfile,
+  CustomContent,
+  CustomSchedule,
+  CustomCalendar,
+  CustomNextAppointment,
 } from './styles';
 
 import logo from '../../assets/logo.svg';
@@ -33,6 +37,34 @@ const Dashboard: React.FC = () => {
           </button>
         </CustomHeaderContent>
       </CustomHeader>
+
+      <CustomContent>
+        <CustomSchedule>
+          <h1>Horários agendados</h1>
+          <p>
+            <span>Hoje</span>
+            <span>Dia 06</span>
+            <span>Segunda-feira</span>
+          </p>
+
+          <CustomNextAppointment>
+            <strong>Atendimento a seguir</strong>
+            <div>
+              <img
+                src="https://avatars.githubusercontent.com/u/36084116?v=4"
+                alt="Robson Locatelli"
+              />
+
+              <strong>Robson Locatelli</strong>
+              <span>
+                <FiClock />
+                08:00
+              </span>
+            </div>
+          </CustomNextAppointment>
+        </CustomSchedule>
+        <CustomCalendar />
+      </CustomContent>
     </Container>
   );
 };
